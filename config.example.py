@@ -1,42 +1,36 @@
 """
 城市设计案例研究助手 — 配置文件
 =================================
-填写 API 密钥后，与 case_extractor.py 放同一目录即可运行。
-支持多家国内 AI API，选一家填入，其余留空。
+支持两种配置方式：
+
+① .env 文件（推荐）: cp .env.example .env → 填入 Key
+② 直接编辑本文件 : 填入下方对应变量
+
+.env 优先级更高——如果 .env 存在，本文件中的值会被覆盖。
 """
 
-# ──────────────────────────────────────────────────────────────
-# 多选一：填入对应密钥，其余留空
-# ──────────────────────────────────────────────────────────────
+import os
 
-# DeepSeek — 几乎免费，100 篇文章约 ¥0.15
-# 申请：https://platform.deepseek.com → API Keys
-DEEPSEEK_API_KEY = ""
+# ── 尝试从 .env 加载（可选依赖）──
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # python-dotenv 未安装，使用本文件中的值
 
-# 智谱 GLM-4-Flash — 完全免费
-# 申请：https://open.bigmodel.cn → 控制台 → API 密钥
-ZHIPU_API_KEY = ""
+# ── 多选一：填入对应密钥，其余留空 ──
 
-# 通义千问 — 新用户赠 ¥300
-# 申请：https://dashscope.aliyuncs.com
-QWEN_API_KEY = ""
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+ZHIPU_API_KEY     = os.getenv("ZHIPU_API_KEY", "")
+QWEN_API_KEY      = os.getenv("QWEN_API_KEY", "")
+MOONSHOT_API_KEY  = os.getenv("MOONSHOT_API_KEY", "")
+ERNIE_API_KEY     = os.getenv("ERNIE_API_KEY", "")
 
-# Moonshot (Kimi) — 长文本能力强，适合论文
-# 申请：https://platform.moonshot.cn
-MOONSHOT_API_KEY = ""
+ACTIVE_API = os.getenv("ACTIVE_API", "deepseek")
+OUTPUT_DIR = os.getenv("OUTPUT_DIR", "./research_output")
 
-# 百度文心一言 (ERNIE) — 中文理解好
-# 申请：https://console.bce.baidu.com/ai
-ERNIE_API_KEY = ""
+# ── 接口参数（通常不需要修改）──
 
-# ──────────────────────────────────────────────────────────────
-# 改这一行来切换供应商
-# ──────────────────────────────────────────────────────────────
-ACTIVE_API = "deepseek"
-
-# ──────────────────────────────────────────────────────────────
-# 接口参数（通常不需要修改）
-# ──────────────────────────────────────────────────────────────
 API_REGISTRY = {
     "deepseek": {
         "key":      DEEPSEEK_API_KEY,
@@ -69,6 +63,3 @@ API_REGISTRY = {
         "label":    "百度文心 ERNIE",
     },
 }
-
-# 输出目录
-OUTPUT_DIR = "./research_output"

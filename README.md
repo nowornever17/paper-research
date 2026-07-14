@@ -26,6 +26,24 @@ python main.py --file paper.pdf   # 直接分析 PDF/TXT/MD 文件
 python main.py --api zhipu        # 切换免费智谱
 ```
 
+## 🏗 工作流程
+
+```
+  PDF / TXT / MD / 粘贴
+        │
+        ▼
+  pdf_reader.py (v1.5+)
+        │
+        ▼
+  api_client.py  ←── prompts/extract.md
+        │
+        ├─✅ 成功 → formatter.py → .md + .json
+        │
+        └─❌ 失败 → case_extractor.py (TF-IDF 降级)
+                     │
+                     └─ formatter.py → .md + .json
+```
+
 ## 📁 项目结构
 
 ```
@@ -54,6 +72,13 @@ python main.py --tfidf          # 强制本地 TF-IDF
 python main.py --demo           # 西溪湿地演示
 ```
 
+## ⚠️ 已知限制
+
+- PDF 仅支持文本型，纯扫描图片 PDF 需 OCR（未来版本）
+- Semantic Scholar 以英文文献为主，中文文献需手动粘贴
+- 单篇文章截取前 3500 字分析（受 API 上下文窗口限制）
+- CNKI / 万方等需登录的学术数据库无法直接抓取
+
 ## 🤝 贡献
 
-欢迎提 Issue 和 PR。本项目在使用中不断迭代，路线图见 [PROJECT.md](./PROJECT.md)。
+欢迎提 Issue 和 PR。详见 [CHANGELOG.md](./CHANGELOG.md)。
