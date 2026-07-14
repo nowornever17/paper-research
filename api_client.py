@@ -9,13 +9,25 @@ except ImportError:
     HAS_OPENAI = False
 
 
-def _load_prompt() -> str:
-    """从 prompts/extract.md 加载 prompt 模板"""
-    prompt_path = os.path.join(os.path.dirname(__file__), "prompts", "extract.md")
+def _load_prompt(discipline: str = "urban_design") -> str:
+    """从 prompts/ 目录加载对应学科的 prompt 模板。
+
+    支持学科: urban_design (城市设计), education (教育学)
+    自定义: 在 prompts/ 下新建 <discipline>.md 即可
+    """
+    prompt_dir = os.path.join(os.path.dirname(__file__), "prompts")
+
+    # 先尝试加载指定学科的 prompt
+    prompt_path = os.path.join(prompt_dir, f"{discipline}.md")
     if os.path.exists(prompt_path):
         with open(prompt_path, "r", encoding="utf-8") as f:
             return f.read()
-    # Fallback: 内嵌默认 prompt
+
+    # Fallback: 默认 prompt (extract.md)
+    default_path = os.path.join(prompt_dir, "extract.md")
+    if os.path.exists(default_path):
+        with open(default_path, "r", encoding="utf-8") as f:
+            return f.read()
     return """你是一位专注于城市设计与公共政策的学术研究助手。
 请严格基于文章内容进行分析，不要添加原文中不存在的信息。
 若某维度信息不足，请如实写「文章未明确说明」，不要编造。

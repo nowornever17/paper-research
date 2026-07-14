@@ -1,5 +1,5 @@
 """
-城市设计案例研究助手 v1.6 — 工程化版
+城市设计案例研究助手 v1.7 — 插件化版
 ==========================================
 用法:
   python main.py                    # 交互式菜单
@@ -152,7 +152,7 @@ def mode_demo():
 def main():
     global ACTIVE_API
     parser = argparse.ArgumentParser(
-        description="城市设计案例研究助手 v1.2 — AI 学术案例精华提取",
+        description="城市设计案例研究助手 v1.7 — AI 学术案例精华提取",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
@@ -185,7 +185,7 @@ def main():
 
     bar = "═" * 50
     print(f"\n╔{bar}╗")
-    print(f"║  城市设计案例研究助手 v1.6{' ' * 23}║")
+    print(f"║  城市设计案例研究助手 v1.7{' ' * 23}║")
     print(f"║  当前 API：{API_REGISTRY[ACTIVE_API]['label']:<38}║")
     print(f"╚{bar}╝")
 
