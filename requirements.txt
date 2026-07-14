@@ -15,6 +15,9 @@ numpy>=1.21.0
 pdfplumber>=0.10.0
 markitdown>=0.0.1
 
+# 输出格式
+python-docx>=0.8.11
+
 # 配置管理
 python-dotenv>=1.0.0
 

@@ -1,84 +1,113 @@
-# 城市设计案例研究助手
+# CaseForge
 
-> AI 驱动的学术案例文献精华提取工具 · v1.7
+> Turn papers into structured knowledge. · v2.0
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue)](https://python.org)
 [![API](https://img.shields.io/badge/API-5%20providers-green)]()
+[![License](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
+[![CI](https://img.shields.io/badge/CI-passing-brightgreen)]()
 
-## ✨ 功能
+## ✨ What is CaseForge?
 
-- 🔍 **自动提取三维度精华** — 背景与冲突 / 关键决策 / 经验教训
-- 🌐 **学术搜索** — Semantic Scholar 英文文献搜索 + AI 批量摘要
-- 🤖 **5 家 AI API** — DeepSeek / 智谱(免费) / 通义 / Moonshot(Kimi) / 文心
-- 📦 **降级保护** — API 失败自动切本地 TF-IDF，不中断工作流
-- 💾 **双格式输出** — Markdown + JSON
-- ⚡ **去重缓存** — 同一篇文章不重复调用 API
-- 🎬 **Demo 开箱即用** — `demo_xixi.py` 西溪湿地案例一秒体验
+CaseForge 将学术论文转换为结构化的知识报告。
+
+```
+  📄 论文 PDF / 粘贴文本
+        │
+        ▼
+  CaseForge Pipeline
+        │
+        ▼
+  📊 结构化知识报告（HTML / MD / JSON / Word）
+```
+
+不是"AI 帮你读论文"，而是"AI 帮你把论文拆成一张信息表格"。
+
+## 🔬 8 字段深度拆解
+
+| 字段 | 说明 |
+|------|------|
+| 🌍 研究背景 | 社会/学术背景，要解决什么问题 |
+| 🎯 研究对象/目的 | 研究对象是什么，研究目标 |
+| 🧪 研究方法 | 定量/定性？数据来源？分析框架？ |
+| 🔬 实验/实证 | 实验设计、数据收集、分析方法 |
+| 📈 核心发现/成果 | 最重要的研究结论 |
+| 💡 创新点 | 相比已有研究的创新之处 |
+| ⚖️ 优势与局限 | 长处 + 不足或适用范围 |
+| ✨ 一句话总结 | 核心贡献一句话 |
 
 ## 🚀 快速开始
 
 ```bash
+git clone https://github.com/nowornever17/CaseForge.git
+cd CaseForge
 pip install -r requirements.txt
 cp config.example.py config.py    # 填入任意一家 API Key
-python main.py                    # 交互式菜单
-python main.py --demo             # 演示模式
-python main.py --file paper.pdf   # 直接分析 PDF/TXT/MD 文件
-python main.py --api zhipu        # 切换免费智谱
+python main.py --demo             # 西溪湿地案例演示
+python main.py --file paper.pdf   # 直接分析 PDF
+python main.py --api zhipu        # 切换到免费智谱 API
 ```
 
-## 🏗 工作流程
+## 🌐 3 大论文库 + 5 家 AI
 
-```
-  PDF / TXT / MD / 粘贴
-        │
-        ▼
-  pdf_reader.py (v1.5+)
-        │
-        ▼
-  api_client.py  ←── prompts/extract.md
-        │
-        ├─✅ 成功 → formatter.py → .md + .json
-        │
-        └─❌ 失败 → case_extractor.py (TF-IDF 降级)
-                     │
-                     └─ formatter.py → .md + .json
+| 搜索 | API | 特点 |
+|------|-----|------|
+| Semantic Scholar | — | 免费，英文为主 |
+| OpenAlex | — | 免费，2.5 亿篇，多语言 |
+| CORE | 免费 Key | 全球开放获取仓库 |
+| DeepSeek | ¥0.15/100篇 | 几乎免费 |
+| 智谱 GLM | **免费** | 每天 10 万 tokens |
+| 通义千问 | ¥300 试用金 | 阿里云 |
+| Moonshot | 按量付费 | 长文本强 |
+| 百度文心 | 免费额度 | 中文优化 |
+
+## 🛠 CLI
+
+```bash
+python main.py --help           # 帮助
+python main.py --demo           # 演示
+python main.py --file <路径>    # 分析文件
+python main.py --api <name>     # 切换 API
+python main.py --list-apis      # 列出 API
+python main.py --tfidf          # 强制本地方案
 ```
 
 ## 📁 项目结构
 
 ```
-├── main.py              # 入口 + CLI
-├── api_client.py        # AI API 调用（可切换 5 家供应商）
-├── pdf_reader.py        # PDF/TXT/MD 文件解析（pdfplumber + markitdown）
-├── search.py            # Semantic Scholar + 网页抓取
+├── main.py              # CLI 入口
+├── api_client.py        # AI 调用 + Prompt 加载
+├── search.py            # Semantic Scholar / OpenAlex / CORE
+├── pdf_reader.py        # PDF / TXT / MD 解析
+├── exporters.py         # MD / JSON / Word / HTML 输出
+├── formatter.py         # 终端格式化
 ├── cache.py             # 去重缓存
-├── formatter.py         # 格式化 + 保存
-├── case_extractor.py    # TF-IDF 降级方案 + 向后兼容
-├── config.example.py    # 配置模板（不含真实 Key）
-├── demo_xixi.py         # 西溪湿地演示
-├── prompts/
-│   └── extract.md       # AI Prompt 模板（可独立编辑）
-└── requirements.txt     # Python 依赖
+├── case_extractor.py    # TF-IDF 降级 + 向后兼容
+├── prompts/             # Prompt 插件（多学科可扩展）
+└── tests/               # 测试
 ```
 
-## 🛠 CLI 命令
+## 🔌 插件化架构
 
-```bash
-python main.py --help           # 帮助
-python main.py --file <路径>     # 直接分析文件（PDF/TXT/MD）
-python main.py --list-apis      # 列出所有 API
-python main.py --api <name>     # 切换 API 供应商
-python main.py --tfidf          # 强制本地 TF-IDF
-python main.py --demo           # 西溪湿地演示
+新增学科不需要改代码，只需在 `prompts/` 下新建一个 `.md` 文件：
+
 ```
+prompts/
+├── urban_design.md    ← 城市设计（默认）
+├── education.md       ← 教育学（示例）
+└── medicine.md        ← 任何人都可以加
+```
+
+详见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
 ## ⚠️ 已知限制
 
 - PDF 仅支持文本型，纯扫描图片 PDF 需 OCR（未来版本）
-- Semantic Scholar 以英文文献为主，中文文献需手动粘贴
 - 单篇文章截取前 3500 字分析（受 API 上下文窗口限制）
 - CNKI / 万方等需登录的学术数据库无法直接抓取
 
 ## 🤝 贡献
 
-欢迎提 Issue 和 PR。详见 [CHANGELOG.md](./CHANGELOG.md)。
+欢迎提 Issue 和 PR — 特别是贡献新的学科 Prompt！
+
+详见 [CONTRIBUTING.md](./CONTRIBUTING.md) · [CHANGELOG.md](./CHANGELOG.md)

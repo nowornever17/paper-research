@@ -1,5 +1,5 @@
 """
-城市设计案例研究助手 v1.7 — 插件化版
+城市设计案例研究助手 v2.0 — 深度论文拆解版
 ==========================================
 用法:
   python main.py                    # 交互式菜单
@@ -23,7 +23,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config import ACTIVE_API, API_REGISTRY, OUTPUT_DIR
 from api_client import call_ai_api
 from search import search_semantic_scholar, fetch_url_content
-from formatter import format_result, save_results
+from formatter import format_result
+from exporters import save_all
 from cache import get_cached_or_none, save_cache, _fingerprint
 from pdf_reader import read_file as read_pdf_file
 
@@ -87,7 +88,7 @@ def mode_paste(force_tfidf=False):
     result = extract_case_insights(text, title=title, force_tfidf=force_tfidf)
     print(format_result(result, title))
     if input("\n是否保存到文件？(y/n): ").strip().lower() == "y":
-        save_results([{**result, "title": title}], OUTPUT_DIR, prefix="single")
+        save_all([{**result, "title": title}], OUTPUT_DIR, prefix="single")
 
 
 def mode_search(force_tfidf=False):
@@ -126,7 +127,7 @@ def mode_search(force_tfidf=False):
         except ValueError:
             pass
     if collected and input("\n是否保存？(y/n): ").strip().lower() == "y":
-        save_results(collected, OUTPUT_DIR, prefix="search")
+        save_all(collected, OUTPUT_DIR, prefix="search")
 
 
 def mode_demo():
@@ -143,7 +144,7 @@ def mode_demo():
     print("\n━━━  TF-IDF 对比 ━━━")
     r_tf = extract_case_insights(XIXI_TEXT, title=XIXI_TITLE, force_tfidf=True, use_cache=False)
     print(format_result(r_tf, XIXI_TITLE + "（TF-IDF）"))
-    save_results(
+    save_all(
         [{**r_ai, "title": XIXI_TITLE}, {**r_tf, "title": XIXI_TITLE + "（TF-IDF对比）"}],
         OUTPUT_DIR, prefix="demo_xixi"
     )
@@ -185,7 +186,7 @@ def main():
 
     bar = "═" * 50
     print(f"\n╔{bar}╗")
-    print(f"║  城市设计案例研究助手 v1.7{' ' * 23}║")
+    print(f"║  城市设计案例研究助手 v2.0{' ' * 23}║")
     print(f"║  当前 API：{API_REGISTRY[ACTIVE_API]['label']:<38}║")
     print(f"╚{bar}╝")
 
@@ -204,7 +205,7 @@ def main():
         result = extract_case_insights(text, title=title, force_tfidf=args.tfidf)
         print(format_result(result, title))
         if input("\n是否保存？(y/n): ").strip().lower() == "y":
-            save_results([{**result, "title": title}], OUTPUT_DIR, prefix="file")
+            save_all([{**result, "title": title}], OUTPUT_DIR, prefix="file")
         return
 
     if args.demo:

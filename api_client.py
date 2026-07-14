@@ -55,19 +55,31 @@ def _load_prompt(discipline: str = "urban_design") -> str:
 
 
 def _parse_response(raw: str) -> dict:
-    """状态机解析 AI 返回的结构化文本"""
-    result = {"background": "", "decisions": "", "lessons": ""}
-    markers = {
-        "【背景与冲突】":    "background",
-        "【关键决策或方案】": "decisions",
-        "【经验与教训】":    "lessons",
+    """状态机解析 AI 返回的结构化文本（支持 8 字段深度拆解）"""
+    result = {
+        "background": "", "objective": "", "methods": "",
+        "experiment": "", "findings": "", "innovation": "",
+        "pros_cons": "", "summary": "", "decisions": "", "lessons": "",
     }
+    markers = [
+        ("【研究背景】",       "background"),
+        ("【背景与冲突】",       "background"),  # 向后兼容旧版 prompt
+        ("【研究对象/目的】",    "objective"),
+        ("【研究方法】",         "methods"),
+        ("【实验/实证】",        "experiment"),
+        ("【核心发现/成果】",    "findings"),
+        ("【创新点】",           "innovation"),
+        ("【优势与局限】",       "pros_cons"),
+        ("【一句话总结】",       "summary"),
+        ("【关键决策或方案】",    "decisions"),   # 向后兼容
+        ("【经验与教训】",       "lessons"),      # 向后兼容
+    ]
     current_key, buf = None, []
 
     for line in raw.split("\n"):
         s = line.strip()
         matched = False
-        for marker, key in markers.items():
+        for marker, key in markers:
             if marker in s:
                 if current_key and buf:
                     result[current_key] = "\n".join(buf).strip()
@@ -108,7 +120,13 @@ def call_ai_api(text: str, title: str = "", api_config: Optional[dict] = None) -
         content += "\n\n（原文较长，已截取前段用于分析）"
 
     prompt_template = _load_prompt()
-    prompt = prompt_template.format(
+
+    # 分离 system prompt（角色设定）和 user prompt（任务+内容）
+    parts = prompt_template.split("---", 1)
+    system_msg = parts[0].strip()
+    task_part = parts[1].strip() if len(parts) > 1 else "请对以下文章进行结构化拆解。"
+
+    user_msg = task_part.format(
         title=title or "（未提供标题）",
         content=content,
     )
@@ -116,8 +134,8 @@ def call_ai_api(text: str, title: str = "", api_config: Optional[dict] = None) -
     resp = client.chat.completions.create(
         model=api_config["model"],
         messages=[
-            {"role": "system", "content": prompt_template.split("---")[0].strip()},
-            {"role": "user",   "content": prompt},
+            {"role": "system", "content": system_msg},
+            {"role": "user",   "content": user_msg},
         ],
         max_tokens=800,
         temperature=0.2,
