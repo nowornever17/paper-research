@@ -1,6 +1,6 @@
 # 城市设计案例研究助手
 
-> AI 驱动的学术案例文献精华提取工具 · v1.6
+> AI 驱动的学术案例文献精华提取工具 · v1.7
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue)](https://python.org)
 [![API](https://img.shields.io/badge/API-5%20providers-green)]()
