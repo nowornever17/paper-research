@@ -1,0 +1,18 @@
+# 城市设计案例研究助手 — 依赖清单
+# 安装命令：pip install -r requirements.txt
+#
+# 最低配置（仅使用AI API方案）：只安装前三行
+# 完整配置（含TF-IDF降级方案）：安装全部
+
+# ── 核心依赖 ──────────────────────────────
+openai>=1.0.0           # AI API（DeepSeek/GLM/Qwen 均兼容 OpenAI 接口）
+requests>=2.28.0        # HTTP 请求（搜索 + URL 抓取）
+beautifulsoup4>=4.11.0  # 网页正文提取
+
+# ── TF-IDF 降级方案（可选）────────────────
+jieba>=0.42.1           # 中文分词
+scikit-learn>=1.0.0     # TF-IDF 向量化
+numpy>=1.21.0           # 矩阵运算（scikit-learn 依赖）
+
+# ── 辅助 ──────────────────────────────────
+urllib3>=1.26.0         # 屏蔽部分国内站点的 SSL 警告
