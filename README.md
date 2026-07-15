@@ -43,7 +43,7 @@ Small. Simple. Extensible. Reusable.
   📖 Reader      ← pdfplumber / markitdown
         │
         ▼
-  🧠 AI Extract  ← 8-field deep extraction
+  🧠 AI Extract  ← 10-field deep extraction
         │
         ▼
   📊 Export      ← HTML / Markdown / JSON / Word
@@ -53,7 +53,7 @@ Small. Simple. Extensible. Reusable.
 
 ## Demo
 
-See `examples/` for sample inputs and outputs.
+![CaseForge Demo](demo.png)
 
 ```bash
 python main.py --demo
