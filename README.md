@@ -64,7 +64,7 @@ python main.py --demo
 ## Quick Start
 
 ```bash
-git clone https://github.com/nowornever17/CaseForge.git
+git clone https://github.com/modusensus/CaseForge.git
 cd CaseForge
 pip install -r requirements.txt
 cp config.example.py config.py     # add any one API key
